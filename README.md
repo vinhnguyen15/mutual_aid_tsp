@@ -33,3 +33,32 @@ Data needed in the request payload are:
 
 Note that the modified TSP formulation has extra constraints of the form $y_i \ge y_j + 1$ for each pickup node $i$ and the corresponding dropoff nodes $j$. These constraints are to ensure that pickup nodes are visited before dropoff nodes.
 
+__Example__
+
+For the dataset as provided in the above TSP example, assume that we add some extra data:
+
+- Pickup nodes: Antwerp and Remouchamps
+- Dropoff nodes: remaining nodes
+- Pickup/dropoff constraints:
+    - Antwerp: [Bruges, Ghent, Grand-Place de Bruxelles, Mechelen, Mons, Waterloo]
+    - Remouchamps: [C-Mine, Dinant, Hasselt, Leuven, Montagne de Bueren, Namur]
+
+The optimal route in this case is:
+
+```
+Antwerp -> Mechelen -> Grand-Place de Bruxelles -> Waterloo -> Remouchamps -> Montagne de Bueren -> C-Mine -> Hasselt -> Leuven -> Namur -> Dinant -> Mons -> Bruges -> Ghent -> Antwerp
+```
+![](./images/sample_opt_sol.png?raw=true)
+
+For comparison, the original optimal route without pickup/dropoff constraints was:
+
+```
+Antwerp -> Bruges -> Ghent -> Grand-Place de Bruxelles -> Waterloo -> Mons -> Namur -> Dinant -> Remouchamps -> Montagne de Bueren -> C-Mine -> Hasselt -> Leuven -> Mechelen -> Antwerp
+```
+
+![](./images/original_opt_sol.png?raw=true)
+
+We can see the new optimal route now respects the pickup/dropoff constraints that we introduced.
+
+
+
