@@ -67,12 +67,8 @@ Sample response
       "longitude": 4.3997081
     },
     {
-      "latitude": 51.2085526,
-      "longitude": 3.226772
-    },
-    {
-      "latitude": 51.0538286,
-      "longitude": 3.7250121
+      "latitude": 51.0281381,
+      "longitude": 4.4803453
     },
     {
       "latitude": 50.84671435,
@@ -83,20 +79,8 @@ Sample response
       "longitude": 4.396367
     },
     {
-      "latitude": 50.4549568,
-      "longitude": 3.951958
-    },
-    {
       "latitude": 50.4794772,
       "longitude": 5.7126031
-    },
-    {
-      "latitude": 50.2591576,
-      "longitude": 4.9130624
-    },
-    {
-      "latitude": 50.4665284,
-      "longitude": 4.8661892
     },
     {
       "latitude": 50.6479624,
@@ -115,26 +99,42 @@ Sample response
       "longitude": 4.7011675
     },
     {
-      "latitude": 51.0281381,
-      "longitude": 4.4803453
+      "latitude": 50.4665284,
+      "longitude": 4.8661892
+    },
+    {
+      "latitude": 50.2591576,
+      "longitude": 4.9130624
+    },
+    {
+      "latitude": 50.4549568,
+      "longitude": 3.951958
+    },
+    {
+      "latitude": 51.2085526,
+      "longitude": 3.226772
+    },
+    {
+      "latitude": 51.0538286,
+      "longitude": 3.7250121
     }
   ],
-  "optimal_objective": 793690.0,
+  "optimal_objective": 374.36452417964296,
   "optimal_order": [
     0,
-    1,
-    4,
+    8,
     5,
     13,
-    9,
     12,
-    3,
-    11,
     10,
     2,
     6,
     7,
-    8
+    11,
+    3,
+    9,
+    1,
+    4
   ]
 }
 ```

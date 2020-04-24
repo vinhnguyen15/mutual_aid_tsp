@@ -4,7 +4,8 @@ import requests
 import os
 
 def create_distance_matrix(addresses):
-    if os.getenv('GOOGLE_DISTANCE_MATRIX_API_KEY') is not None:
+    # if os.getenv('GOOGLE_DISTANCE_MATRIX_API_KEY') is not None:
+    if False:
         distance_matrix, locations = create_distance_matrix_gdm(addresses)
     else:
         distance_matrix, locations = create_distance_matrix_osm(addresses)
@@ -37,10 +38,14 @@ def create_distance_matrix_gdm(addresses):
     locations = get_geocodes_osm(addresses)
     return distance_matrix, locations
 
+# convert meters to miles
+def get_miles(i):
+     return i*0.000621371192
+
 def build_distance_matrix(response):
     distance_matrix = []
     for row in response['rows']:
-        row_list = [row['elements'][j]['distance']['value'] for j in range(len(row['elements']))]
+        row_list = [get_miles(row['elements'][j]['distance']['value']) for j in range(len(row['elements']))]
         distance_matrix.append(row_list)
     return distance_matrix
 
@@ -73,11 +78,11 @@ def get_geocodes_osm(addresses):
 # Using OpenStreetMap
 def create_distance_matrix_osm(addresses):
     locations = get_geocodes_osm(addresses)
-    distance_matrix = [
+    distance_matrix = [[
         0 if i==j 
         else geodesic((i.latitude, i.longitude), (j.latitude, j.longitude)).miles
+        for j in locations]
         for i in locations
-        for j in locations
     ]
     return distance_matrix, locations
 
