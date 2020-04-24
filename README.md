@@ -14,7 +14,7 @@ git push heroku master
 
 Sample request:
 ```bash
-curl --location --request GET 'http://127.0.0.1:5000/shortest-route' \
+curl --location --request GET 'https://mutualaid-tsp.herokuapp.com/shortest-route' \
 --header 'Content-Type: text/plain' \
 --data-raw '{
     "addresses": {
