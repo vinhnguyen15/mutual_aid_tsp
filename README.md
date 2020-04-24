@@ -165,10 +165,11 @@ For the dataset as provided in the above TSP example, assume that we add some ex
     - Remouchamps: [C-Mine, Dinant, Hasselt, Leuven, Montagne de Bueren, Namur]
 
 The optimal route in this case is:
-  
+
 ```
 Antwerp -> Mechelen -> Grand-Place de Bruxelles -> Waterloo -> Remouchamps -> Montagne de Bueren -> C-Mine -> Hasselt -> Leuven -> Namur -> Dinant -> Mons -> Bruges -> Ghent
--> Antwerp```
+-> Antwerp
+```
 
 ![](./images/sample_opt_sol.png?raw=true)
 
