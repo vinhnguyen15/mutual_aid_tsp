@@ -26,13 +26,14 @@ def get_shortest_route():
     # parse input data
     s_request = request.get_data()
     data = json.loads(s_request)
-    fields = ['n', 'V', 'c', 'V0', 'V1', 'P']
+    fields = ['addresses', 'pickups', 'pickup_dropoff_constraints']
     if not all(key in data for key in fields):
         return 'Data JSON must have the following fields: \n {}'.format(', '.join(fields)), 400
     try:
         # solve the tsp problem
-        _, opt_sol = solve_tsp(data)
-        return jsonify(opt_sol), 200
+        opt_obj, opt_sol = solve_tsp(data)
+        response = {'optimal_objective': opt_obj, 'optimal_solution': opt_sol}
+        return jsonify(response), 200
     except Exception as e:
         tb = traceback.format_exc()
         return 'Error solving the TSP model: \n {}\n {}'.format(e, tb), 500

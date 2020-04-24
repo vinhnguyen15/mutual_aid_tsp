@@ -1,14 +1,33 @@
 from itertools import product
 from mip import Model, xsum, minimize, BINARY
+from distance_matrix_calculator import create_distance_matrix
+
+MAX_SOL_TIME_SECS = 30
 
 def solve_tsp(data):
-    n = data['n']
-    V = set(data['V'])
-    c = data['c']
-    V0 = set(data['V0'])
-    V1 = set(data['V1'])
-    P = data['P']
+    # set of nodes
+    V = []
+    addresses = []
+    for k, v in data['addresses'].items():
+        V.append(int(k))
+        addresses.append(v)
+    V = set(V)
+
+    # set of pickup nodes
+    pickups = [int(i) for i in data['pickups']]
+    V0 = set(pickups)
+
+    P = {int(k):v for k, v in data['pickup_dropoff_constraints'].items()}
+
+    # number of nodes
+    n = len(addresses)
     
+    # for testing, pass distance_matrix as a data field
+    if 'distance_matrix' in data:
+        c = data['distance_matrix']
+    else:
+        c = create_distance_matrix(addresses)
+        
     model = Model()
 
     # binary variables indicating if arc (i,j) is used on the route or not
@@ -34,19 +53,24 @@ def solve_tsp(data):
         if i != j:
             model += y[i] - (n+1)*x[i][j] >= y[j]-n
 
-    # pickup before delivery constraint
-    model += y[0] == n-1
+    # if pickups are not provided, use an arbitrary node
+    if len(V0)==0:
+        first_node = 0
+    else:
+        first_node = list(V0)[0]
+    model += y[first_node]== n-1
+
+    # pickup before delivery constraints
     for i in P:
-        # make sure i is int
         for j in P[i]:
-            model += y[int(i)] >= y[j] + 1
+            model += y[i] >= y[int(j)] + 1
 
     # optimizing
-    model.optimize(max_seconds=30)
+    model.optimize(max_seconds=MAX_SOL_TIME_SECS)
 
     # get optimal solution
     opt_obj = model.objective_value
-    opt_sol = [list(V)[0]]
+    opt_sol = [first_node]
     nc = 0
     while True:
         nc = [i for i in V if x[nc][i].x >= 0.99][0]
