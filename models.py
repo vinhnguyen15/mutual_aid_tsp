@@ -1,6 +1,6 @@
 from itertools import product
 from mip import Model, xsum, minimize, BINARY
-from distance_matrix_calculator import create_distance_matrix
+from distance_matrix_calculator import create_distance_matrix, get_geocodes_osm
 
 MAX_SOL_TIME_SECS = 30
 
@@ -25,8 +25,9 @@ def solve_tsp(data):
     # for testing, pass distance_matrix as a data field
     if 'distance_matrix' in data:
         c = data['distance_matrix']
+        locations = get_geocodes_osm(addresses)
     else:
-        c = create_distance_matrix(addresses)
+        c, locations = create_distance_matrix(addresses)
         
     model = Model()
 
@@ -71,10 +72,23 @@ def solve_tsp(data):
     # get optimal solution
     opt_obj = model.objective_value
     opt_sol = [first_node]
+    opt_loc = [
+        {
+            "latitude": locations[first_node].latitude,
+            "longitude": locations[first_node].longitude
+        }
+    ]
     nc = 0
     while True:
         nc = [i for i in V if x[nc][i].x >= 0.99][0]
-        opt_sol.append(nc)
         if nc == 0:
             break
-    return opt_obj, opt_sol
+        opt_sol.append(nc)
+        opt_loc.append(
+            {
+                "latitude": locations[nc].latitude,
+                "longitude": locations[nc].longitude
+            }
+        )
+
+    return opt_obj, opt_sol, opt_loc

@@ -31,8 +31,8 @@ def get_shortest_route():
         return 'Data JSON must have the following fields: \n {}'.format(', '.join(fields)), 400
     try:
         # solve the tsp problem
-        opt_obj, opt_sol = solve_tsp(data)
-        response = {'optimal_objective': opt_obj, 'optimal_solution': opt_sol}
+        opt_obj, opt_sol, opt_loc = solve_tsp(data)
+        response = {'geolocations': opt_loc, 'optimal_order': opt_sol, 'optimal_objective': opt_obj}
         return jsonify(response), 200
     except Exception as e:
         tb = traceback.format_exc()

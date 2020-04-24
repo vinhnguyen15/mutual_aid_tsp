@@ -1,7 +1,17 @@
+from geopy.geocoders import Nominatim
+from geopy.distance import geodesic
 import requests
 import os
 
 def create_distance_matrix(addresses):
+    if os.getenv('GOOGLE_DISTANCE_MATRIX_API_KEY') is not None:
+        distance_matrix, locations = create_distance_matrix_gdm(addresses)
+    else:
+        distance_matrix, locations = create_distance_matrix_osm(addresses)
+    return distance_matrix, locations
+
+# Using Google Distance Matrix API
+def create_distance_matrix_gdm(addresses):
     API_key = os.getenv('GOOGLE_DISTANCE_MATRIX_API_KEY')
     # Distance Matrix API only accepts 100 elements per request, so get rows in multiple requests.
     max_elements = 100
@@ -23,7 +33,9 @@ def create_distance_matrix(addresses):
         origin_addresses = addresses[q * max_rows: q * max_rows + r]
         response = send_request(origin_addresses, dest_addresses, API_key)
         distance_matrix += build_distance_matrix(response)
-    return distance_matrix
+
+    locations = get_geocodes_osm(addresses)
+    return distance_matrix, locations
 
 def build_distance_matrix(response):
     distance_matrix = []
@@ -49,3 +61,25 @@ def send_request(origin_addresses, dest_addresses, API_key):
                        dest_address_str + '&key=' + API_key
     response = requests.get(request).json()
     return response
+
+def get_geocodes_osm(addresses):
+    addresses_osm = [i.replace('+', ' ') for i in addresses]
+    geolocator = Nominatim(user_agent="mutual_aid_tsp")
+    locations = [geolocator.geocode(i) for i in addresses_osm]
+    if any(i is None for i in locations):
+        raise NotAllAddressesValidOSM
+    return locations
+
+# Using OpenStreetMap
+def create_distance_matrix_osm(addresses):
+    locations = get_geocodes_osm(addresses)
+    distance_matrix = [
+        0 if i==j 
+        else geodesic((i.latitude, i.longitude), (j.latitude, j.longitude)).miles
+        for i in locations
+        for j in locations
+    ]
+    return distance_matrix, locations
+
+class NotAllAddressesValidOSM(Exception):
+    pass
